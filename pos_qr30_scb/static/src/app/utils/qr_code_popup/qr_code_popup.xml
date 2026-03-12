@@ -7,6 +7,9 @@
                 <t t-out="shopName"/>
             </div>
         </xpath>
+        <xpath expr="//img" position="attributes">
+            <attribute name="t-att-src">qrCodeSrc</attribute>
+        </xpath>
         <xpath expr="//div[hasclass('mt-1')]" position="after">
             <div class="mt-1" t-if="state.secondBeforeExpire and state.secondBeforeExpire > 0">
                 <span class="text-warning fw-bolder">Please pay within <span t-esc="state.secondBeforeExpire"/>

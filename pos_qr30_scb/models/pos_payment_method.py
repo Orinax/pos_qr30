@@ -98,12 +98,6 @@ class PosPaymentMethod(models.Model):
         if self.payment_method_type != 'qr_code':
             self.qr_code_method = None
 
-    @api.onchange('is_online_payment')
-    def _onchange_is_online_payment(self):
-        # Unset the use_payment_terminal field when switching to a payment method that doesn't use it
-        if self.is_online_payment:
-            self.payment_method_type = 'none'
-
     def _is_write_forbidden(self, fields):
         return super(PosPaymentMethod, self)._is_write_forbidden(fields -
                                                                  {'qr30_api_auth_token', 'qr30_api_auth_token_expire_time'})

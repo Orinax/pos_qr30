@@ -8,7 +8,7 @@ export class QR30Popup extends ConfirmationDialog {
     ...ConfirmationDialog.props,
     line: Object,
     order: Object,
-    qrCode: String,
+    qrCode: [String, Object],
   };
 
   static defaultProps = {
@@ -51,6 +51,19 @@ export class QR30Popup extends ConfirmationDialog {
     this.props.order.showQRcodeOnCustomerDisplay();
   }
 
+  get qrCodeSrc() {
+    const qrCode = this.props.qrCode;
+    if (typeof qrCode === "string") return qrCode;
+    if (qrCode && typeof qrCode === "object") {
+      const raw = qrCode.qrImage || qrCode.image || qrCode.data || "";
+      if (raw && !raw.startsWith("data:")) {
+        return `data:image/png;base64,${raw}`;
+      }
+      return raw;
+    }
+    return "";
+  }
+
   countdown() {
     if (this.props.line.get_payment_status() == "done") {
       this.props.close();
@@ -85,7 +98,7 @@ export class QR30Popup extends ConfirmationDialog {
       qrPaymentData: {
         name: this.props.title,
         amount: this.amount,
-        qrCode: this.props.qrCode,
+        qrCode: this.qrCodeSrc,
       },
     };
   }

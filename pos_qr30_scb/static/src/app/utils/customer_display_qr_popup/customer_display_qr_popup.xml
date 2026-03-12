@@ -4,11 +4,11 @@
     <t t-name="pos_qr30_scb.CustomerDisplayQRPopup">
         <Dialog title.translate="QR Code Payment" size="'md'">
             <div class="d-flex flex-column align-items-center justify-content-center">
-                <p t-out="props.body" class="text-prewrap" style="font-weight: bold;"/>
+                <p t-out="body" class="text-prewrap" style="font-weight: bold;"/>
                 <div class="text-center fw-bolder" t-if="props.shopName">
                     <span t-esc="props.shopName"/>
                 </div>
-                <img t-att-src="props.qrCode" alt="QR Code" style="width: 200px; height: 200px;"/>
+                <img t-att-src="qrCodeSrc" alt="QR Code" style="width: 200px; height: 200px;"/>
                 <div class="mt-1">
                     <strong>Amount: </strong>
                     <t t-out="props.amount" />
