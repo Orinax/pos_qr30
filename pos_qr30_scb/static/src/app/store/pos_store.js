@@ -1,7 +1,7 @@
-import { PosStore } from "@point_of_sale/app/store/pos_store";
+import { PosStore } from "@point_of_sale/app/services/pos_store";
 import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { QR30Popup } from "@pos_qr30_scb/app/utils/qr_code_popup/qr_code_popup";
-import { ask } from "@point_of_sale/app/store/make_awaitable_dialog";
+import { ask } from "@point_of_sale/app/utils/make_awaitable_dialog";
 import { ConnectionLostError } from "@web/core/network/rpc";
 import { patch } from "@web/core/utils/patch";
 import { _t } from "@web/core/l10n/translation";
@@ -35,8 +35,8 @@ patch(PosStore.prototype, {
         payment = payment.length > 0 && payment[0];
       }
 
-      if (payment && payment.get_payment_status() === "waitingPayment") {
-        payment.set_payment_status("done");
+      if (payment && payment.getPaymentStatus() === "waitingPayment") {
+        payment.setPaymentStatus("done");
         payment.setTransactionDetails(jsonData);
       }
     });
@@ -56,7 +56,7 @@ patch(PosStore.prototype, {
 
     try {
       if (
-        payment.get_payment_status() != "waitingPayment" ||
+        payment.getPaymentStatus() != "waitingPayment" ||
         payment.qr30_expire_time <= DateTime.now()
       ) {
         // generate new qr code
@@ -75,9 +75,6 @@ patch(PosStore.prototype, {
         payment.setQRdata(response);
       }
 
-      // format_amount: this.chrome.env.utils.formatCurrency(payment.amount)
-      this.chrome.sendOrderToCustomerDisplay(this.get_order(), false);
-      payment.pos_order_id.chrome = this.chrome;
       return await ask(
         this.env.services.dialog,
         {
@@ -98,7 +95,7 @@ patch(PosStore.prototype, {
           "Connection to the server has been lost. Please check your internet connection."
         );
       } else {
-        message = error.data.message;
+        message = error?.data?.message || error?.message || String(error);
       }
       this.env.services.dialog.add(AlertDialog, {
         title: _t("Failure to generate Payment QR Code"),

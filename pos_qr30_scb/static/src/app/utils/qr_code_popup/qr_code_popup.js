@@ -37,12 +37,6 @@ export class QR30Popup extends ConfirmationDialog {
     onWillDestroy(async () => {
       clearInterval(this.update);
       this.props.order.hideQRcodeOnCustomerDisplay();
-      if (this.props.line.get_payment_status() != "done") {
-        this.props.order.chrome.sendOrderToCustomerDisplay(
-          this.props.order,
-          false
-        );
-      }
       // this.env.services.bus_service.unsubscribe("PAYMENT_CALLBACK", pmCallback);
     });
 
@@ -52,7 +46,7 @@ export class QR30Popup extends ConfirmationDialog {
   }
 
   countdown() {
-    if (this.props.line.get_payment_status() == "done") {
+    if (this.props.line.getPaymentStatus() == "done") {
       this.props.close();
     }
     this.state.secondBeforeExpire = Math.round(
@@ -68,7 +62,7 @@ export class QR30Popup extends ConfirmationDialog {
   async _cancel() {
     await this.callCancelApiRequest();
     // this.props.order.hideQRcodeOnCustomerDisplay();
-    this.props.line.set_payment_status("retry");
+    this.props.line.setPaymentStatus("retry");
     return super._cancel();
   }
 

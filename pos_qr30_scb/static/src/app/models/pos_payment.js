@@ -4,21 +4,21 @@ import { patch } from "@web/core/utils/patch";
 const { DateTime } = luxon;
 
 patch(PosPayment.prototype, {
-  handle_payment_response(isPaymentSuccessful) {
+  handlePaymentResponse(isPaymentSuccessful) {
     if (this.payment_method_id.qr_code_method != "qr30")
-      return super.handle_payment_response(isPaymentSuccessful);
+      return super.handlePaymentResponse(isPaymentSuccessful);
 
-    if (this.get_payment_status() === "done") return true;
+    if (this.getPaymentStatus() === "done") return true;
 
     if (isPaymentSuccessful) {
-      // this.set_payment_status("qr30ForceDone");
-      this.set_payment_status("done");
+      // this.setPaymentStatus("qr30ForceDone");
+      this.setPaymentStatus("done");
       return true;
     } else if (
       this.qr30_expire_time &&
       this.qr30_expire_time <= DateTime.now()
     ) {
-      this.set_payment_status("expired");
+      this.setPaymentStatus("expired");
     }
 
     return isPaymentSuccessful;
@@ -36,7 +36,7 @@ patch(PosPayment.prototype, {
       seconds: this.payment_method_id.qr30_payment_timer,
     });
 
-    this.set_payment_status("waitingPayment");
+    this.setPaymentStatus("waitingPayment");
   },
 
   setTransactionDetails(data) {
@@ -50,6 +50,6 @@ patch(PosPayment.prototype, {
     this.qr30_payer_account_name = data.payerName;
     this.qr30_payer_account_number = data.payerAccountNumber;
 
-    this.set_payment_status("done");
+    this.setPaymentStatus("done");
   },
 });
